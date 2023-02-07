@@ -4,13 +4,8 @@ import { FloatingMenuList, getGif } from './asset.js'
 function App() {
 
   const [floatingMenu, setFloatingMenu] = useState(FloatingMenuList)
-
-  const [gifList1, setGifList1] = useState([])
-  const [gifList2, setGifList2] = useState([])
-  const [gifList3, setGifList3] = useState([])
-
+  const [gifList, setGifList] = useState([])
   const [catagory, setCatagory] = useState("cat")
-
   const inputRef = useRef()
 
   useEffect(() => {
@@ -21,14 +16,9 @@ function App() {
     search(catagory)
   }, [catagory])
 
-  useEffect(() => {
-    console.log(gifList1)
-  }, [gifList1])
-
-
   async function search(value) {
 
-    console.log(value)
+    console.log("result for ", value)
     var array = await getGif(value)
     var tempArray = []
     var finalArray = []
@@ -41,9 +31,7 @@ function App() {
       tempArray.push(element)
     })
     console.log(finalArray)
-    setGifList1(finalArray[0])
-    setGifList2(finalArray[1])
-    setGifList3(finalArray[2])
+    setGifList(finalArray)
   }
 
   return (
@@ -54,11 +42,8 @@ function App() {
       </div>
 
       <div className="flex justify-center items-center">
-
         <div className="p-8 w-full md:w-4/5 xl:w-4/5">
-
           <div className="search xl:px-10">
-
             <div className="flex items-center border border-gray-500 rounded-full px-2">
 
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-500">
@@ -77,52 +62,45 @@ function App() {
               </svg>
 
             </div>
-
           </div>
 
           <div className="floating-menu flex justify-around p-2 py-6">
             {
-              floatingMenu.map(menu => <FloatingMenu name={menu.name} background={menu.background} />)
+              floatingMenu.map(menu => <FloatingMenu action={() => setCatagory(menu.name)} name={menu.name} background={menu.background} />)
             }
           </div>
 
 
           <div className="flex justify-center flex-wrap">
-
             <div className="m-1">
               {
-                gifList1?.map(gif => <img src={gif.media[0].gif.url} className="w-72 rounded-md m-2 md:w-60 xl:w-60"></img>)
+                gifList[0]?.map(gif => <img src={gif.media[0].gif.url} className="w-72 rounded-md m-2 md:w-60 xl:w-60"></img>)
               }
             </div>
 
             <div className="m-1">
               {
-                gifList2?.map(gif => <img src={gif.media[0].gif.url} className="w-72 rounded-md m-2 md:w-60 xl:w-60"></img>)
+                gifList[1]?.map(gif => <img src={gif.media[0].gif.url} className="w-72 rounded-md m-2 md:w-60 xl:w-60"></img>)
               }
             </div>
             <div className="m-1">
               {
-                gifList3?.map(gif => <img src={gif.media[0].gif.url} className="w-72 rounded-md m-2 md:w-60 xl:w-60"></img>)
+                gifList[2]?.map(gif => <img src={gif.media[0].gif.url} className="w-72 rounded-md m-2 md:w-60 xl:w-60"></img>)
               }
             </div>
-
-
           </div>
 
-
-
         </div>
-
       </div >
 
     </div >
   )
 }
 
-function FloatingMenu({ name, background }) {
+function FloatingMenu({ name, background, action }) {
   var classname = `h-8 w-30 rounded-md flex justify-center items-center cursor-pointer m-1 ${background} md:h-10 xl:h-10`
   return (
-    <div className={classname}>
+    <div className={classname} onClick={action}>
       <p className="text-gray-100 text-sm md:font-bold xl:font-bold">{name}</p>
     </div>
   )
